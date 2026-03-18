@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="color-scheme" content="light" />
+    <meta name="color-scheme" content="light dark" />
     <title>Jetour Zambia</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -15,6 +15,23 @@
   </head>
   <body>
     <main class="page">
+      <button class="theme-btn" type="button" id="themeBtn" aria-label="切换深色/浅色模式">
+        <svg class="theme-btn__icon theme-btn__icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.5 6.5 0 1 0 9.8 9.8Z" />
+        </svg>
+        <svg class="theme-btn__icon theme-btn__icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12Z" />
+          <path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19" />
+        </svg>
+      </button>
+      <button class="share-btn" type="button" id="shareBtn" aria-label="复制网页链接">
+        <svg class="share-btn__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path
+            d="M16 2a3 3 0 0 1 2.816 4.017l-6.32 4.213a3.012 3.012 0 0 1 0 1.54l6.32 4.213A3 3 0 1 1 18 21a2.99 2.99 0 0 1-.889-2.218l-6.338-4.226a3 3 0 1 1 0-5.112l6.338-4.226A3 3 0 1 1 16 2Z"
+          />
+        </svg>
+      </button>
+      <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
       <section class="hero" aria-label="Profile">
         <div class="logo-wrap">
           <img
@@ -69,21 +86,107 @@
         <a id="instagram" class="card" href="https://apps.apple.com/zm/app/weaverbird/id6504273748" target="_blank" rel="noreferrer">
           <img class="card-logo" src="images/appstore.jpeg" alt="" aria-hidden="true" />
           <span class="card-title">App Store</span>
-          <span class="kebab" aria-hidden="true">⋮</span>
+          <!-- <span class="kebab" aria-hidden="true">⋮</span> -->
         </a>
 
         <a id="facebook" class="card" href="https://play.google.com/store/apps/details?id=uni.app.UNI4679CB4&pcampaignid=web_share" target="_blank" rel="noreferrer">
           <img class="card-logo" src="images/googleplay.png" alt="" aria-hidden="true" />
           <span class="card-title">Google Play</span>
-          <span class="kebab" aria-hidden="true">⋮</span>
+          <!-- <span class="kebab" aria-hidden="true">⋮</span> -->
         </a>
 
         <a id="tiktok" class="card" href="https://www.tiktok.com/" target="_blank" rel="noreferrer">
           <img class="card-logo" src="images/Android_robot.svg.png" alt="" aria-hidden="true" />
           <span class="card-title">Android</span>
-          <span class="kebab" aria-hidden="true">⋮</span>
+          <!-- <span class="kebab" aria-hidden="true">⋮</span> -->
         </a>
       </section>
     </main>
+
+    <script>
+      (function () {
+        const THEME_KEY = "theme";
+        const metaColorScheme = document.querySelector('meta[name="color-scheme"]');
+        const themeBtn = document.getElementById("themeBtn");
+
+        const shareBtn = document.getElementById("shareBtn");
+        const toast = document.getElementById("toast");
+        if (!toast) return;
+
+        function showToast(message, options) {
+          const side = options && options.side ? options.side : "right";
+          toast.classList.remove("toast--left", "toast--right");
+          toast.classList.add(side === "left" ? "toast--left" : "toast--right");
+          toast.textContent = message;
+          toast.classList.add("toast--show");
+          window.clearTimeout(showToast._t);
+          showToast._t = window.setTimeout(() => toast.classList.remove("toast--show"), 1600);
+        }
+
+        function setTheme(explicitTheme) {
+          const root = document.documentElement;
+          if (explicitTheme === "dark" || explicitTheme === "light") {
+            root.setAttribute("data-theme", explicitTheme);
+            try {
+              localStorage.setItem(THEME_KEY, explicitTheme);
+            } catch (_) {}
+          } else {
+            root.removeAttribute("data-theme");
+            try {
+              localStorage.removeItem(THEME_KEY);
+            } catch (_) {}
+          }
+          if (metaColorScheme) metaColorScheme.setAttribute("content", "light dark");
+        }
+
+        function getEffectiveTheme() {
+          const explicit = document.documentElement.getAttribute("data-theme");
+          if (explicit === "dark" || explicit === "light") return explicit;
+          return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        }
+
+        // Init theme from localStorage (if present); otherwise follow system.
+        try {
+          const saved = localStorage.getItem(THEME_KEY);
+          if (saved === "dark" || saved === "light") setTheme(saved);
+        } catch (_) {}
+
+        if (themeBtn) {
+          themeBtn.addEventListener("click", () => {
+            const next = getEffectiveTheme() === "dark" ? "light" : "dark";
+            setTheme(next);
+            showToast(next === "dark" ? "Dark mode has been switched on." : "Light mode has been switched on.", { side: "left" });
+          });
+        }
+
+        async function copyText(text) {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+            return;
+          }
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          ta.setAttribute("readonly", "");
+          ta.style.position = "fixed";
+          ta.style.left = "-9999px";
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+        }
+
+        if (shareBtn) {
+          shareBtn.addEventListener("click", async () => {
+            const url = "https://weaverbird-brochure.yuehai.workers.dev";
+            try {
+              await copyText(url);
+              showToast("The link has been copied.", { side: "right" });
+            } catch (e) {
+              showToast("Copy failed. Please do it manually.", { side: "right" });
+            }
+          });
+        }
+      })();
+    </script>
   </body>
 </html>
