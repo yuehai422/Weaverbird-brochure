@@ -1,0 +1,176 @@
+:root {
+  --bg: #eef1f4;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --radius: 16px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji",
+    "Segoe UI Emoji";
+  color: var(--text);
+  background: var(--bg);
+}
+
+.page {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 28px 18px 40px;
+}
+
+.hero {
+  text-align: center;
+  padding-top: 6px;
+}
+
+.logo-wrap {
+  width: 110px;
+  height: 110px;
+  margin: 0 auto 14px;
+  background: #fff;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.logo {
+  width: 86px;
+  height: 86px;
+  object-fit: contain;
+  border-radius: 999px;
+}
+
+.handle {
+  margin: 0;
+  font-size: 34px;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+
+.welcome {
+  margin: 10px auto 14px;
+  max-width: 25ch;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.flag {
+  display: inline-block;
+  transform: translateY(1px);
+}
+
+.social {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin: 12px 0 18px;
+}
+
+.social-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  display: grid;
+  place-items: center;
+  color: #0b1220;
+  text-decoration: none;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.06);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.social-btn svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+  opacity: 0.9;
+}
+
+.social-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: #fff;
+}
+
+.social-btn:active {
+  transform: scale(0.98);
+}
+
+.cards {
+  display: grid;
+  gap: 14px;
+  margin-top: 6px;
+}
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px 16px;
+  display: grid;
+  grid-template-columns: 48px 1fr 18px;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid rgba(15, 23, 42, 0.05);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card:active {
+  transform: scale(0.995);
+}
+
+.card-logo {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.kebab {
+  text-align: right;
+  color: rgba(15, 23, 42, 0.45);
+  font-size: 20px;
+  line-height: 1;
+  user-select: none;
+}
+
+@media (max-width: 360px) {
+  .handle {
+    font-size: 30px;
+  }
+  .welcome {
+    font-size: 15px;
+  }
+}
